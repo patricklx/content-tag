@@ -3,7 +3,6 @@
 #[macro_use]
 extern crate lazy_static;
 
-use std::ops::{Deref, DerefMut};
 use std::path::PathBuf;
 
 use base64::{Engine as _, engine::general_purpose};
@@ -15,7 +14,6 @@ use swc_core::common::GLOBALS;
 use swc_ecma_ast::{Ident, ImportDecl, ImportNamedSpecifier, ImportSpecifier, Module, ModuleDecl, ModuleExportName, ModuleItem};
 use swc_ecma_codegen::Emitter;
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
-use swc_ecma_utils::private_ident;
 use swc_ecma_visit::{as_folder, VisitMut, VisitMutWith, VisitWith};
 
 mod bindings;
@@ -149,7 +147,7 @@ impl Preprocessor {
                 n = n + 1;
               }
             }
-            let id = found_id.unwrap_or_else(|| private_ident!(new_specifier));
+            let id = found_id.unwrap_or_else(|| new_specifier.into());
             let mut needs_import = false;
             parsed_module.visit_mut_with(&mut as_folder(transform::TransformVisitor::new(
                 &id,
